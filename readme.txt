@@ -4,7 +4,7 @@ Donate link: http://www.75nineteen.com/
 Tags: email, woocommerce, twitter, follow-up
 Requires at least: 4.0
 Tested up to: 4.1+
-Stable tag: 1.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -23,3 +23,8 @@ Please note: You must already have [Follow-up Emails](http://www.woothemes.com/p
 
 = 1.0 =
 * First tweet
+
+= 1.0.1 =
+* Added a check to make sure that you are running [Follow-up Emails 4.1+](http://www.woothemes.com/products/follow-up-emails/ "Follow-up Emails 4.1+”)
+* Fixed an incorrect method name in the API Client
+* Moved the settings page to the Integrations tab

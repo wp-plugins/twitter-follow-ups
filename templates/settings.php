@@ -21,71 +21,63 @@
     <p><?php _e('After creating your app, click on the Keys and Access Tokens tab to get your Consumer Key and Consumer Secret.', 'follow_up_emails'); ?></p>
 </div>
 
-<form action="admin-post.php" method="post" enctype="multipart/form-data">
 
-    <table class="form-table">
-        <tbody>
+<table class="form-table">
+    <tbody>
+    <tr valign="top">
+        <th><label for="twitter_consumer_key"><?php _e('Consumer Key', 'follow_up_emails'); ?></label></th>
+        <td>
+            <input type="text" name="twitter_consumer_key" id="twitter_consumer_key" value="<?php echo esc_attr( $this->fue_twitter->settings['consumer_key'] ); ?>" size="50" />
+        </td>
+    </tr>
+    <tr valign="top">
+        <th><label for="twitter_consumer_secret"><?php _e('Consumer Secret', 'follow_up_emails'); ?></label></th>
+        <td>
+            <input type="text" name="twitter_consumer_secret" id="twitter_consumer_secret" value="<?php echo esc_attr( $this->fue_twitter->settings['consumer_secret'] ); ?>" size="50" />
+        </td>
+    </tr>
+    <?php
+    if ( empty( $this->fue_twitter->settings['access_token'] ) && ( !empty( $this->fue_twitter->settings['consumer_key'] ) && !empty( $this->fue_twitter->settings['consumer_secret'] ) ) ):
+        $connection     = new \Abraham\TwitterOAuth\TwitterOAuth( $this->fue_twitter->settings['consumer_key'], $this->fue_twitter->settings['consumer_secret'] );
+        $request_token  = $connection->oauth('oauth/request_token');
+        $auth_url       = $connection->url('oauth/authorize', array('oauth_token' => $request_token['oauth_token']));
+
+        // store the token for 10 minutes
+        set_transient( 'fue_twitter_request_token', $request_token, 600 );
+        ?>
         <tr valign="top">
-            <th><label for="twitter_consumer_key"><?php _e('Consumer Key', 'follow_up_emails'); ?></label></th>
+            <th><label for="twitter_signin"><?php _e('Grant API Access', 'follow_up_emails'); ?></label></th>
             <td>
-                <input type="text" name="twitter_consumer_key" id="twitter_consumer_key" value="<?php echo esc_attr( $this->fue_twitter->settings['consumer_key'] ); ?>" size="50" />
+                <a href="<?php echo $auth_url; ?>"><img src="<?php echo plugins_url( 'templates/images/sign-in-with-twitter.png', FUE_Twitter::PLUGIN_FILE ); ?>" alt="<?php _e('Sign In with Twitter', 'follow_up_emails'); ?>" /></a>
             </td>
         </tr>
-        <tr valign="top">
-            <th><label for="twitter_consumer_secret"><?php _e('Consumer Secret', 'follow_up_emails'); ?></label></th>
-            <td>
-                <input type="text" name="twitter_consumer_secret" id="twitter_consumer_secret" value="<?php echo esc_attr( $this->fue_twitter->settings['consumer_secret'] ); ?>" size="50" />
-            </td>
-        </tr>
-        <?php
-        if ( empty( $this->fue_twitter->settings['access_token'] ) && ( !empty( $this->fue_twitter->settings['consumer_key'] ) && !empty( $this->fue_twitter->settings['consumer_secret'] ) ) ):
-            $connection     = new \Abraham\TwitterOAuth\TwitterOAuth( $this->fue_twitter->settings['consumer_key'], $this->fue_twitter->settings['consumer_secret'] );
-            $request_token  = $connection->oauth('oauth/request_token');
-            $auth_url       = $connection->url('oauth/authorize', array('oauth_token' => $request_token['oauth_token']));
-
-            // store the token for 10 minutes
-            set_transient( 'fue_twitter_request_token', $request_token, 600 );
-            ?>
-            <tr valign="top">
-                <th><label for="twitter_signin"><?php _e('Grant API Access', 'follow_up_emails'); ?></label></th>
-                <td>
-                    <a href="<?php echo $auth_url; ?>"><img src="<?php echo plugins_url( 'templates/images/sign-in-with-twitter.png', FUE_Twitter::PLUGIN_FILE ); ?>" alt="<?php _e('Sign In with Twitter', 'follow_up_emails'); ?>" /></a>
-                </td>
-            </tr>
-        <?php endif; ?>
-        </tbody>
-    </table>
+    <?php endif; ?>
+    </tbody>
+</table>
 
     <p class="submit">
-        <input type="hidden" name="action" value="fue_followup_save_settings" />
-        <input type="hidden" name="section" value="twitter" />
-        <input type="submit" name="save" value="<?php _e('Save Settings', 'follow_up_emails'); ?>" class="button-primary" />
         <?php if ( !empty( $this->fue_twitter->settings['access_token'] ) ): ?>
         <input type="button" name="test" class="button-secondary toggle-test" value="<?php _e('Test API Keys', 'follow_up_emails'); ?>" class="button-primary" />
         <?php endif; ?>
     </p>
-</form>
 
 <div id="test-form" style="display: none;">
     <h3><?php _e('API Test', 'follow_up_emails'); ?></h3>
 
-    <form action="admin-post.php" method="post">
-
         <table class="form-table">
             <tr>
-                <th><label for="message"><?php _e('Tweet', 'follow_up_emails'); ?></label></th>
+                <th><label for="twitter_message"><?php _e('Tweet', 'follow_up_emails'); ?></label></th>
                 <td>
-                    <textarea name="message" id="message" cols="50" rows="5"></textarea>
+                    <textarea id="twitter_message" cols="50" rows="5"></textarea>
                     <p class="description"><?php _e('Max of 140 characters', 'follow_up_emails'); ?></p>
                 </td>
             </tr>
         </table>
 
         <p class="submit">
-            <input type="hidden" name="action" value="fue_twitter_api_test" />
-            <input type="submit" name="test_api" class="button-primary" value="Tweet!" />
+            <input type="button" id="twitter_test_api" class="button-primary" value="Tweet!" />
         </p>
-    </form>
+
 </div>
 <script>
     jQuery(".toggle-guide").click(function(e) {
@@ -96,5 +88,9 @@
 
     jQuery(".toggle-test").click(function() {
         jQuery("#test-form").toggle();
+    });
+
+    jQuery("#twitter_test_api").click(function() {
+        window.location.href = "admin-post.php?action=fue_twitter_api_test&message="+ encodeURIComponent(jQuery("#twitter_message").val());
     });
 </script>

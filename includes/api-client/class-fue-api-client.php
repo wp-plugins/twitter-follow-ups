@@ -175,7 +175,7 @@ class FUE_API_Client {
      * @param  array  $params
      * @return mixed|json string
      */
-    public function get_sales_report( $params = array() ) {
+    public function get_emails_report( $params = array() ) {
         return $this->_make_api_call( 'reports/emails', $params );
     }
 
