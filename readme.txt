@@ -25,6 +25,6 @@ Please note: You must already have [Follow-up Emails](http://www.woothemes.com/p
 * First tweet
 
 = 1.0.1 =
-* Added a check to make sure that you are running [Follow-up Emails 4.1+](http://www.woothemes.com/products/follow-up-emails/ "Follow-up Emails 4.1+”)
+* Added a check to make sure that you are running Follow-up Emails 4.1+
 * Fixed an incorrect method name in the API Client
 * Moved the settings page to the Integrations tab
