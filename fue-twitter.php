@@ -3,8 +3,8 @@
   * Plugin Name: Twitter Add-on for Follow-up Emails
   * Plugin URI: http://www.woothemes.com/products/follow-up-emails/
   * Description: Twitter Integration for Follow-Up marketing plugin for WooCommerce. Don't just email. Tweet your customers!
-  * Version: 1.0
-  * Author: 75nineteen Media, LLC
+  * Version: 1.1
+  * Author: 75nineteen Media LLC
   * Author URI: http://www.75nineteen.com
   */
 
@@ -16,7 +16,7 @@ class FUE_Twitter {
     /**
      * Plugin version
      */
-    const VERSION = '1.0';
+    const VERSION = '1.1';
 
     /**
      * Plugin file path
@@ -53,6 +53,14 @@ class FUE_Twitter {
         $this->twitter_frontend = new FUE_Twitter_Frontend( $this );
     }
 
+    public function show_unsupported_version_notice() {
+        ?>
+        <div class="error">
+            <p><?php _e( 'FUE-Twitter requires Follow-Up Emails version 4.1+', 'follow_up_emails' ); ?></p>
+        </div>
+    <?php
+    }
+
     /**
      * Register hooks
      */
@@ -60,6 +68,13 @@ class FUE_Twitter {
         add_filter( 'fue_addons', array($this, 'register_addon') );
         add_filter( 'fue_email_types', array($this, 'register_email_types'), 20 );
         add_filter( 'plugins_loaded', array($this, 'include_fue_extensions') );
+        add_filter( 'plugins_loaded', array($this, 'check_fue_version') );
+    }
+
+    public function check_fue_version() {
+        if ( !defined( 'FUE_VERSION' ) || version_compare( FUE_VERSION, '4.1', '<' ) ) {
+            add_action( 'admin_notices', array( $this, 'show_unsupported_version_notice' ) );
+        }
     }
 
     public function include_fue_extensions() {
@@ -143,7 +158,7 @@ class FUE_Twitter {
             'installed'     => true,
             'settings'      => true,
             'url'           => '#',
-            'description'   => __('Tweet your customers based upon their purchase history.', 'follow_up_emails')
+            'description'   => __('@todo twitter description', 'follow_up_emails')
         );
 
         return $addons;
@@ -179,8 +194,8 @@ class FUE_Twitter {
             'singular_label'        => __('Twitter Message', 'follow_up_emails'),
             'triggers'              => $triggers,
             'durations'             => Follow_Up_Emails::$durations,
-            'long_description'      => __('You can tweet your customers on a schedule based upon their purchase history. You must first setup your Twitter application. Learn More', 'follow_up_emails'),
-            'short_description'     => __('You can tweet your customers on a schedule based upon their purchase history. You must first setup your Twitter application. Learn More', 'follow_up_emails'),
+            'long_description'      => __('@todo', 'follow_up_emails'),
+            'short_description'     => __('@todo', 'follow_up_emails'),
             'list_template'         => dirname(__FILE__) . '/templates/email-list.php'
         );
         $types[] = new FUE_Email_Type( 'twitter', $props );
