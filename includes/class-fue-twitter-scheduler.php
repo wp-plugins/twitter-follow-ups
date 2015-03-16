@@ -25,7 +25,7 @@ class FUE_Twitter_Scheduler extends FUE_Addon_Woocommerce_Scheduler {
      */
     public function register_hooks() {
         // @since 2.2.1 support custom order statuses
-        add_action( 'init', array($this, 'hook_statuses') );
+        add_action( 'plugins_loaded', array($this, 'hook_statuses'), 20 );
         add_action( 'woocommerce_checkout_order_processed', array($this, 'order_status_updated') );
 
         // use the twitter handle as the email address
@@ -57,7 +57,7 @@ class FUE_Twitter_Scheduler extends FUE_Addon_Woocommerce_Scheduler {
      * Register order statuses to trigger follow-up emails
      */
     function hook_statuses() {
-        $statuses = Follow_Up_Emails::instance()->fue_wc->get_order_statuses();
+        $statuses = $this->fue_twitter->twitter_tweet->get_order_statuses();
 
         foreach ( $statuses as $status ) {
             add_action('woocommerce_order_status_'. $status, array($this, 'order_status_updated'), 100);

@@ -26,8 +26,8 @@ class FUE_Twitter_Admin {
      */
     public function register_hooks() {
         // settings
-        add_action( 'fue_addon_settings_twitter', array($this, 'settings_form') );
-        add_action( 'admin_post_fue_addon_twitter_save_settings', array($this, 'save_settings') );
+        add_action( 'fue_settings_integration', array($this, 'settings_form') );
+        add_action( 'fue_settings_save', array($this, 'save_settings') );
 
 
         // OAuth Callback
@@ -60,14 +60,13 @@ class FUE_Twitter_Admin {
      * @param array $data
      */
     public function save_settings( $data ) {
-        $settings = $this->fue_twitter->get_settings();
-        $settings['consumer_key']       = sanitize_text_field( $_POST['twitter_consumer_key'] );
-        $settings['consumer_secret']    = sanitize_text_field( $_POST['twitter_consumer_secret'] );
+        if ( $data['section'] == 'integration' ) {
+            $settings = $this->fue_twitter->get_settings();
+            $settings['consumer_key']       = sanitize_text_field( $data['twitter_consumer_key'] );
+            $settings['consumer_secret']    = sanitize_text_field( $data['twitter_consumer_secret'] );
 
-        update_option( 'fue_twitter', $settings );
-
-        wp_redirect( 'admin.php?page=followup-emails-addons&settings=twitter&saved=1' );
-        exit;
+            update_option( 'fue_twitter', $settings );
+        }
     }
 
     /**
@@ -125,7 +124,7 @@ class FUE_Twitter_Admin {
                 'type'      => 'twitter',
                 'name'      => 'Twitter API Test',
                 'subject'   => '',
-                'message'   => $_POST['message'],
+                'message'   => $_REQUEST['message'],
                 'status'    => 'active',
                 'trigger'   => 'processing',
                 'interval'  => '1',
@@ -169,7 +168,7 @@ class FUE_Twitter_Admin {
             $fue_api->delete_email( $email_id );
             echo '<p>Email deleted</p>';
 
-            echo '<p>All done! Back to the <a href="admin.php?page=followup-emails-addons&settings=twitter">settings page</a></p>';
+            echo '<p>All done! Back to the <a href="admin.php?page=followup-emails-settings&tab=integration">settings page</a></p>';
         } catch ( Exception $e ) {
             wp_die( $e->getMessage() );
         }
