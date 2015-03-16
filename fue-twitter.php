@@ -3,7 +3,7 @@
   * Plugin Name: Twitter Add-on for Follow-up Emails
   * Plugin URI: http://www.woothemes.com/products/follow-up-emails/
   * Description: Twitter Integration for Follow-Up marketing plugin for WooCommerce. Don't just email. Tweet your customers!
-  * Version: 1.1
+  * Version: 1.1.1
   * Author: 75nineteen Media LLC
   * Author URI: http://www.75nineteen.com
   */
@@ -16,7 +16,7 @@ class FUE_Twitter {
     /**
      * Plugin version
      */
-    const VERSION = '1.1';
+    const VERSION = '1.1.1';
 
     /**
      * Plugin file path
